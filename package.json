@@ -1,6 +1,6 @@
 {
   "name": "gh-common-followers",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Get GitHub common followers given two usernames",
   "license": "MIT",
   "repository": "sindresorhus/github-username",
