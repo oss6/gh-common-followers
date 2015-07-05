@@ -17,26 +17,32 @@ var getResults = function (res1, res2, cb) {
         return;
     }
 
-    var followers1 = res1.data.items.map(function (user) {
+    var followers1 = res1.data.map(function (user) {
         return user.login;
     });
 
-    var followers2 = res2.data.items.map(function (user) {
+    var followers2 = res2.data.map(function (user) {
         return user.login;
     });
 
     return [followers1, followers2];
 };
 
-function intersect(a, b) {
-    var t;
-    if (b.length > a.length) t = b, b = a, a = t; // indexOf to loop over shorter
-    return a.filter(function (e) {
-        if (b.indexOf(e) !== -1) return true;
-    });
-}
+var intersect = function (a, b) {
+    var result = [];
+    while( a.length > 0 && b.length > 0 ) {
+        if      (a[0] < b[0] ){ a.shift(); }
+        else if (a[0] > b[0] ){ b.shift(); }
+        else {
+            result.push(a.shift());
+            b.shift();
+        }
+    }
 
-module.exports = function (username1, username2, token, cb) {
+    return result;
+};
+
+module.exports = function (username1, username2, limit, token, cb) {
 
     if (typeof username1 !== 'string' || typeof username2 !== 'string') {
         throw new Error('Type error: usernames must be of type `string`');
@@ -60,3 +66,8 @@ module.exports = function (username1, username2, token, cb) {
         });
     });
 };
+
+var ghCF = require('./');
+ghCF('addyosmani', 'paulirish', function (err, data) {
+    console.log(data);
+});
