@@ -1,0 +1,35 @@
+{
+  "name": "gh-common-followers",
+  "version": "1.0.0",
+  "description": "Get GitHub common followers given two usernames",
+  "license": "MIT",
+  "repository": "sindresorhus/github-username",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  "preferGlobal": true,
+  "bin": "cli.js",
+  "keywords": [
+    "cli-app",
+    "cli",
+    "bin",
+    "github",
+    "followers",
+    "follow",
+    "gh",
+    "git"
+  ],
+  "dependencies": {
+    "gh-got": "^1.1.0",
+    "meow": "^3.3.0"
+  }
+}
