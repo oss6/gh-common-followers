@@ -1,62 +1,18 @@
 'use strict';
 
-var ghGot = require('gh-got');
+var GitHubApi = require('github');
 
-var defaults = {
-    token: null,
-    perPage1: 100,
-    page1: 1,
-    perPage2: 100,
-    page2: 1
-};
-
-var extend = function (defaults, options) {
-    var extended = {};
-    var prop;
-    for (prop in defaults) {
-        if (Object.prototype.hasOwnProperty.call(defaults, prop)) {
-            extended[prop] = defaults[prop];
-        }
+var github = new GitHubApi({
+    // required
+    version: "3.0.0",
+    // optional
+    debug: false,
+    protocol: "https",
+    timeout: 5000,
+    headers: {
+        "user-agent": "oss6"
     }
-    for (prop in options) {
-        if (Object.prototype.hasOwnProperty.call(options, prop)) {
-            extended[prop] = options[prop];
-        }
-    }
-    return extended;
-};
-
-var get_followers = function (username, opts, callback) {
-    ghGot('users/' + username + '/followers', {
-        token: opts.token,
-        query: {
-            per_page: opts.perPage,
-            page: opts.page
-        }
-    }, callback);
-};
-
-var getResults = function (res1, res2, cb) {
-    if (res1.err) {
-        cb(res1.err);
-        return;
-    }
-
-    if (res2.err) {
-        cb(res2.err);
-        return;
-    }
-
-    var followers1 = res1.data.map(function (user) {
-        return user.login;
-    });
-
-    var followers2 = res2.data.map(function (user) {
-        return user.login;
-    });
-
-    return [followers1, followers2];
-};
+});
 
 var intersect = function (a, b) {
     var result = [];
@@ -72,44 +28,60 @@ var intersect = function (a, b) {
     return result;
 };
 
-module.exports = function (username1, username2, opts, cb) {
+var retrieve_rest = function (link, rest, cb) {
+    (function _retrieve_rest (link) {
+        if (!github.hasNextPage(link)) {
+            cb(null, rest);
+            return;
+        }
+
+        github.getNextPage(link, function (err, data) {
+
+            rest.concat(data.map(function (user) {
+                return user.login;
+            }));
+            _retrieve_rest(data.meta.link);
+        });
+    })(link);
+};
+
+var get_followers = function (username, cb) {
+    github.user.getFollowers({
+        user: username,
+        per_page: 100
+    }, function (err, data) {
+        var users = data.map(function (user) {
+            return user.login;
+        });
+
+        retrieve_rest(data.meta.link, users, cb);
+    });
+};
+
+module.exports = function (username1, username2, limit, cb) {
 
     if (typeof username1 !== 'string' || typeof username2 !== 'string') {
         throw new Error('Type error: usernames must be of type `string`');
     }
 
-    if (typeof opts === 'function') {
-        cb = opts;
-        opts = {};
+    if (typeof limit === 'function') {
+        cb = limit;
+        limit = 100;
     }
 
-    opts = extend(defaults, opts);
+    get_followers(username1, function (err, data) {
+        console.log('======================== USER 1 ===============================');
+        console.log(data);
 
-    var result1, result2;
-
-    // Get first user's followers
-    get_followers(username1, {
-        perPage: opts.perPage1,
-        page: opts.page1,
-        token: opts.token
-    }, function (err, data) {
-        result1 = { err: err, data: data };
-
-        // Get second user's followers
-        get_followers(username2, {
-            perPage: opts.perPage2,
-            page: opts.page2,
-            token: opts.token
-        }, function (err, data) {
-            result2 = { err: err, data: data };
-
-            var followers = intersect.apply(null, getResults(result1, result2, cb));
-            cb(null, followers);
+        get_followers(username2, function (err, data) {
+            console.log('======================== USER 2 ===============================');
+            console.log(data);
         });
     });
+
 };
 
-var ghCF = require('./');
-ghCF('addyosmani', 'sindresorhus', function (err, data) {
-    console.log(data);
+var ghf = require('./');
+ghf('oss6', 'sindresorhus', function (err, data) {
+
 });

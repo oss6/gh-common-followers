@@ -29,7 +29,7 @@
     "git"
   ],
   "dependencies": {
-    "gh-got": "^1.1.0",
+    "github": "^0.2.4",
     "meow": "^3.3.0"
   }
 }
