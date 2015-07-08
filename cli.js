@@ -7,7 +7,7 @@ var ghCF = require('./');
 var cli = meow({
     help: [
         'Usage',
-        '  $ gh-common-followers <username1> <username2> [--token=<token>]'
+        '  $ gh-common-followers <username1> <username2> [--token=<token>] [--limit=<limit>]'
     ]
 });
 
@@ -19,12 +19,12 @@ if (!username1 || !username2) {
     process.exit(1);
 }
 
-ghCF(username1, username2, cli.flags.token, function (err) {
+ghCF(username1, username2, cli.flags.token, cli.flags.limit, function (err, data) {
     if (err) {
         console.error(err);
         process.exit(1);
     }
 
     // Output followers here
-
+    console.log(data);
 });
