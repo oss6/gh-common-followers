@@ -25,6 +25,6 @@ ghCF(username1, username2, cli.flags.token, cli.flags.limit, function (err, data
         process.exit(1);
     }
 
-    // Output followers here
+    // Output followers
     console.log(data);
 });

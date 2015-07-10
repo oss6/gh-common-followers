@@ -57,6 +57,11 @@ var GitHubApi = require('github'),
             user: username,
             per_page: 100
         }, function (err, data) {
+            if (err) {
+                cb(err);
+                return;
+            }
+
             var users = data.map(function (user) {
                 return user.login;
             });
@@ -83,9 +88,30 @@ module.exports = function (username1, username2, token, limit, cb) {
         throw new Error('Type error: usernames must be of type `string`');
     }
 
+    // ghCF(username1, username2, cb);
+    if (typeof token === 'function') {
+        cb = token;
+        limit = 250;
+        token = null;
+    }
+
+    // ghCF(username1, username2, 'my_token', cb);
     if (typeof limit === 'function') {
         cb = limit;
         limit = 250;
+    }
+
+    // ghCF(username1, username2, 10, cb);
+    if (typeof token === 'number') {
+        limit = token;
+        token = null;
+    }
+
+    if (token) {
+        github.authenticate({
+            type: 'token',
+            token: token
+        });
     }
 
     // Get followers of the two users
@@ -95,14 +121,24 @@ module.exports = function (username1, username2, token, limit, cb) {
             return;
         }
 
+        console.log(data1);
+
         getFollowers(username2, limit, function (err2, data2) {
             if (err2) {
                 cb(err2);
                 return;
             }
 
+            console.log('--------------------------------------------------------------------------------');
+            console.log(data2);
+
             cb(null, intersect(data1, data2))
         });
     });
 
 };
+
+var gh = require('./');
+gh('NotBobTheBuilder', 'briandiaz', function (err, data) {
+    console.log(data);
+});
