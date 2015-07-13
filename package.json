@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "Get GitHub common followers given two usernames",
   "license": "MIT",
-  "repository": "sindresorhus/github-username",
+  "repository": "oss6/gh-common-followers",
   "author": {
-    "name": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com"
+    "name": "Ossama Edbali",
+    "email": "ossedb@gmail.com",
+    "url": "oss6.github.io"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
