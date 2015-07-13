@@ -14,15 +14,20 @@ $ npm install --save gh-common-followers
 ```js
 var ghCommonFollowers = require('gh-common-followers');
 
-ghCommonFollowers('paulirish', 'addyosmani' function (err, common_followers) {
+ghCommonFollowers('paulirish', 'addyosmani', function (err, common_followers) {
+	// Sanity check + do stuff with common_followers
+});
 
+// Limit specified
+ghCommonFollowers('paulirish', 'addyosmani', 40, function (err, common_followers) {
+	// Sanity check + do stuff with common_followers
 });
 ```
 
 
 ## API
 
-### ghCommonFollowers(username1, username2, [token], callback)
+### ghCommonFollowers(username1, username2, [token], [limit], callback)
 
 #### username1
 
@@ -43,6 +48,12 @@ Username 2
 Type: `string`
 
 GitHub [personal access token](https://github.com/settings/tokens/new).
+
+#### limit
+
+Type: `string`
+
+Limits the number of followers to retrieve (for both users)
 
 #### callback(err, common_followers)
 
