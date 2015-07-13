@@ -21,8 +21,7 @@ var GitHubApi = require('github'),
                 b.shift();
             }
         }
-
-        console.log(result);
+        
         return result;
     },
 
